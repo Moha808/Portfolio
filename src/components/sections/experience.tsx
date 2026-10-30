@@ -1,38 +1,6 @@
 import { motion } from "framer-motion";
-import { Briefcase, GraduationCap, MapPin, Calendar } from "lucide-react";
-
-const experience = [
-  {
-    type: "work" as const,
-    role: "Junior Frontend Developer",
-    company: "African Intelligence PLC",
-    location: "Nigeria",
-    period: "2025 - Present",
-    description:
-      "Collaborating with design and product teams to implement pixel-perfect user interfaces. Mentoring junior developers and contributing to design system architecture.",
-    skills: ["React", "TypeScript", "Tailwind CSS"],
-  },
-  {
-    type: "work" as const,
-    role: "Frontend Developer",
-    company: "Nhub Organisation",
-    location: "Nigeria",
-    period: "2024 - 2025",
-    description:
-      "Built interactive web applications and collaborated closely with designers to translate Figma mockups into responsive, accessible user interfaces.",
-    skills: ["HTML", "CSS", "JavaScript", "React"],
-  },
-  {
-    type: "education" as const,
-    role: "HND Computer Science",
-    company: "Federal College of Animal Health & Production Technology, Vom",
-    location: "Plateau State, Nigeria",
-    period: "2022 - 2026",
-    description:
-      "Focused on software engineering and web technologies. Graduated with honors while actively building projects and contributing to open source.",
-    skills: ["Software Engineering", "Web Development", "Data Structures"],
-  },
-];
+import { Briefcase, GraduationCap, MapPin, Calendar, CheckCircle2 } from "lucide-react";
+import { EXPERIENCES } from "@/data/portfolio-data";
 
 export function Experience() {
   return (
@@ -46,12 +14,11 @@ export function Experience() {
           className="text-center mb-16"
         >
           <span className="text-primary font-mono text-sm tracking-wider uppercase">
-            // journey
+            // career trajectory
           </span>
           <h2 className="section-heading mt-3">Experience & Education</h2>
           <p className="section-subheading">
-            My professional journey and academic background that shaped me as a
-            developer.
+            My professional career path, key achievements at tech firms, and academic software engineering training.
           </p>
         </motion.div>
 
@@ -68,7 +35,7 @@ export function Experience() {
           </div>
 
           <div className="space-y-12">
-            {experience.map((item, index) => (
+            {EXPERIENCES.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -103,7 +70,7 @@ export function Experience() {
                 >
                   <motion.div
                     whileHover={{ y: -3, scale: 1.01 }}
-                    className="group p-6 rounded-2xl border border-border bg-card/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                    className="group p-6 sm:p-7 rounded-3xl border border-border bg-card/50 hover:border-primary/40 hover:shadow-xl transition-all duration-300"
                   >
                     {/* Period Badge */}
                     <div className="flex items-center gap-2 mb-3">
@@ -117,8 +84,8 @@ export function Experience() {
                       {item.role}
                     </h3>
 
-                    <div className="flex items-center gap-3 text-muted-foreground mb-3">
-                      <span className="font-medium text-sm">
+                    <div className="flex items-center gap-3 text-muted-foreground mb-4">
+                      <span className="font-semibold text-sm text-foreground/90">
                         {item.company}
                       </span>
                       <span className="w-1 h-1 rounded-full bg-muted-foreground" />
@@ -132,12 +99,24 @@ export function Experience() {
                       {item.description}
                     </p>
 
+                    {/* Achievements bullets */}
+                    {item.achievements && item.achievements.length > 0 && (
+                      <div className="space-y-2 mb-5">
+                        {item.achievements.map((ach, i) => (
+                          <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                            <span>{ach}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Skill Tags */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/50">
                       {item.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="px-2.5 py-1 text-xs font-mono font-medium bg-secondary text-secondary-foreground rounded-md"
+                          className="px-2.5 py-0.5 text-xs font-mono font-medium bg-secondary text-secondary-foreground rounded-md"
                         >
                           {skill}
                         </span>

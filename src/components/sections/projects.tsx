@@ -1,211 +1,180 @@
-import { motion } from "framer-motion";
-import { Github, ExternalLink, Folder } from "lucide-react";
+import { useState } from "react";
+import {
+  ExternalLink,
+  Info,
+  Globe,
+} from "lucide-react";
+import { PROJECTS, type Project } from "@/data/portfolio-data";
+import { ProjectModal } from "./project-modal";
 
-const projects = [
-  {
-    title: "E-Commerce Dashboard",
-    description:
-      "A comprehensive analytics dashboard for managing products, orders, tracking sales metrics, and visualizing business performance in real-time.",
-    tags: ["React", "Tailwind CSS", "Chart.js"],
-    links: { demo: "#", repo: "#" },
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
-    featured: true,
-  },
-  {
-    title: "Social Media App",
-    description:
-      "A fully functional social media application with real-time messaging, user profiles, news feed, and content sharing capabilities.",
-    tags: ["Firebase", "TypeScript"],
-    links: { demo: "#", repo: "#" },
-    image:
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop",
-    featured: false,
-  },
-  {
-    title: "Task Management Tool",
-    description:
-      "Kanban-style project management app for teams to collaborate, assign tasks, set deadlines, and track progress efficiently.",
-    tags: ["React", "Redux", "Node.js"],
-    links: { demo: "#", repo: "#" },
-    image:
-      "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=800&auto=format&fit=crop",
-    featured: false,
-  },
-];
+function ProjectVisual({ project }: { project: Project }) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <div className="relative h-52 sm:h-60 w-full overflow-hidden border-b border-border bg-slate-950 flex flex-col group/thumb">
+      {/* Real Website Screenshot */}
+      <div className="flex-grow relative overflow-hidden bg-slate-900 flex items-center justify-center">
+        {!imgError ? (
+          <>
+            <img
+              src={project.image}
+              alt={`${project.title} live interface preview`}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover/thumb:scale-105"
+            />
+            {/* Subtle bottom vignette gradient so the image blends into the card cleanly */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
+          </>
+        ) : (
+          /* Fallback clean placeholder if image load ever fails */
+          <div className="p-6 text-center text-slate-400 font-mono text-xs flex flex-col items-center justify-center gap-2">
+            <Globe size={24} className="text-teal-400" />
+            <span>{project.domain}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function Projects() {
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const categories = [
+    { id: "all", label: "All Projects (8)" },
+    { id: "ecommerce", label: "E-Commerce (2)" },
+    { id: "social", label: "Social & Community (3)" },
+    { id: "webapps", label: "Web Apps & Systems (3)" },
+  ];
+
+  const filteredProjects =
+    activeFilter === "all"
+      ? PROJECTS
+      : PROJECTS.filter((p) => p.category === activeFilter);
+
   return (
-    <section id="projects" className="py-24 relative">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-
+    <section id="projects" className="py-20 relative">
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary font-mono text-sm tracking-wider uppercase">
-            // my work
+        {/* Section Header */}
+        <div className="text-center mb-12">
+          <span className="text-primary font-mono text-xs tracking-wider uppercase">
+            // portfolio & live work
           </span>
-          <h2 className="section-heading mt-3">Featured Projects</h2>
+          <h2 className="section-heading mt-2">Featured Projects</h2>
           <p className="section-subheading">
-            A curated selection of projects that showcase my skills and passion
-            for building exceptional web experiences.
+            Eight live production web applications, community platforms, and enterprise tools I have engineered. Each project includes real interface screenshots and a working live site you can test directly.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="space-y-8">
-          {/* Featured Project */}
-          {projects
-            .filter((p) => p.featured)
-            .map((project, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="group relative grid lg:grid-cols-2 gap-0 rounded-2xl border border-border bg-card/50 overflow-hidden hover:border-primary/30 transition-all duration-500"
-              >
-                {/* Image */}
-                <div className="relative h-64 lg:h-auto overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-card/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-card/60" />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider">
-                      Featured
+        {/* Category Filters */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveFilter(cat.id)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+                activeFilter === cat.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-card text-muted-foreground border border-border hover:text-foreground hover:bg-secondary/60"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="group rounded-2xl border border-border bg-card shadow-sm hover:border-primary/50 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+            >
+              <div>
+                {/* Real Website Screenshot Thumbnail in Browser Window */}
+                <ProjectVisual project={project} />
+
+                {/* Card Header & Body */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-primary/10 text-primary border border-primary/20">
+                      {project.categoryLabel}
+                    </span>
+                    <span className="text-[11px] font-mono text-muted-foreground truncate max-w-[200px]">
+                      {project.domain}
                     </span>
                   </div>
-                </div>
 
-                {/* Content */}
-                <div className="p-8 lg:p-12 flex flex-col justify-center">
-                  <div className="flex items-center gap-2 text-primary mb-3">
-                    <Folder size={16} />
-                    <span className="text-xs font-mono uppercase tracking-wider">
-                      Featured Project
-                    </span>
-                  </div>
-                  <h3 className="text-2xl lg:text-3xl font-bold mb-4 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-xs font-medium text-muted-foreground mb-3">
+                    {project.tagline}
+                  </p>
+
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     {project.description}
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
+
+                  {/* Highlights */}
+                  <div className="space-y-1.5 mb-5">
+                    {project.highlights.map((highlight, idx) => (
+                      <div
+                        key={idx}
+                        className="text-xs text-muted-foreground flex items-start gap-2"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                        <span>{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tech Stack Tags */}
+                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border/50">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 text-xs font-mono font-medium bg-primary/10 text-primary rounded-full border border-primary/20"
+                        className="px-2 py-0.5 text-[11px] font-mono rounded bg-secondary text-secondary-foreground border border-border/70"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <motion.a
-                      href={project.links.demo}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:shadow-lg hover:shadow-primary/25 transition-all"
-                    >
-                      Live Demo
-                      <ExternalLink size={14} />
-                    </motion.a>
-                    <motion.a
-                      href={project.links.repo}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border hover:border-primary/30 font-medium text-sm transition-all"
-                    >
-                      Source Code
-                      <Github size={14} />
-                    </motion.a>
-                  </div>
                 </div>
-              </motion.div>
-            ))}
+              </div>
 
-          {/* Other Projects Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {projects
-              .filter((p) => !p.featured)
-              .map((project, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="group relative rounded-2xl border border-border bg-card/50 overflow-hidden hover:border-primary/30 transition-all duration-300"
+              {/* Action Buttons */}
+              <div className="px-6 py-4 bg-secondary/30 border-t border-border flex items-center justify-between gap-3">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-sm hover:opacity-95 transition-all"
                 >
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
+                  <span>View Live Project</span>
+                  <ExternalLink size={13} />
+                </a>
 
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <motion.a
-                        href={project.links.demo}
-                        whileHover={{ scale: 1.1 }}
-                        className="w-10 h-10 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/30"
-                        title="Live Demo"
-                      >
-                        <ExternalLink size={16} />
-                      </motion.a>
-                      <motion.a
-                        href={project.links.repo}
-                        whileHover={{ scale: 1.1 }}
-                        className="w-10 h-10 rounded-full bg-card/90 border border-border text-foreground flex items-center justify-center shadow-lg"
-                        title="Source Code"
-                      >
-                        <Github size={16} />
-                      </motion.a>
-                    </div>
-
-                    {/* Project Number */}
-                    <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-card/80 border border-border flex items-center justify-center text-xs font-mono font-bold text-muted-foreground">
-                      0{index + 2}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4 leading-relaxed line-clamp-2">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2.5 py-1 text-xs font-mono font-medium bg-secondary text-secondary-foreground rounded-md"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-          </div>
+                <button
+                  onClick={() => setSelectedProject(project)}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border bg-card hover:bg-secondary text-foreground text-xs font-medium transition-colors"
+                >
+                  <Info size={13} className="text-primary" />
+                  <span>Case Details</span>
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Case Details Modal */}
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   );
 }

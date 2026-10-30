@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun, Search } from "lucide-react";
 import { useTheme } from "@/providers/theme-provider";
 import { cn } from "@/lib/utils";
+import { PERSONAL_INFO } from "@/data/portfolio-data";
 
 const navLinks = [
   { name: "About", href: "#about" },
@@ -12,7 +13,7 @@ const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
-export function Navbar() {
+export function Navbar({ onOpenCommandPalette }: { onOpenCommandPalette: () => void }) {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -22,9 +23,8 @@ export function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Detect active section
       const sections = navLinks.map((l) => l.href.replace("#", ""));
-      for (const id of sections.reverse()) {
+      for (const id of [...sections].reverse()) {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= 120) {
           setActiveSection(id);
@@ -39,22 +39,18 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-500",
-        scrolled ? "glass shadow-lg shadow-background/50" : "bg-transparent",
+        "fixed top-0 w-full z-40 transition-all duration-300",
+        scrolled ? "glass shadow-sm" : "bg-transparent",
       )}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <motion.a
+        <a
           href="#"
-          className="font-bold text-xl tracking-tighter group"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          className="font-bold text-xl tracking-tighter hover:opacity-80 transition-opacity"
         >
-          <span className="text-foreground transition-colors group-hover:text-primary">
-            Moha
-          </span>
-          <span className="gradient-text">.dev</span>
-        </motion.a>
+          <span className="text-foreground">{PERSONAL_INFO.nickname}</span>
+          <span className="text-primary">{PERSONAL_INFO.domain}</span>
+        </a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
@@ -65,57 +61,64 @@ export function Navbar() {
                 key={link.name}
                 href={link.href}
                 className={cn(
-                  "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300",
+                  "relative px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all duration-200",
                   isActive
-                    ? "text-primary"
+                    ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {link.name}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute inset-0 rounded-full bg-primary/10 border border-primary/20"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
               </a>
             );
           })}
 
-          <div className="w-px h-6 bg-border mx-2" />
+          <div className="w-px h-5 bg-border mx-2" />
 
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 15 }}
-            whileTap={{ scale: 0.9 }}
+          <button
+            onClick={onOpenCommandPalette}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-card text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all mr-1"
+            title="Open Command Palette (Ctrl + K)"
+          >
+            <Search size={13} className="text-primary" />
+            <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-secondary rounded border border-border">
+              ⌘K
+            </kbd>
+          </button>
+
+          <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+            className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </motion.button>
+            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
         </div>
 
         {/* Mobile Controls */}
-        <div className="md:hidden flex items-center gap-2">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+        <div className="md:hidden flex items-center gap-1.5">
+          <button
+            onClick={onOpenCommandPalette}
+            className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground"
+            aria-label="Search and commands"
+          >
+            <Search size={18} />
+          </button>
+
+          <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-full hover:bg-accent transition-colors"
+            className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground"
+            aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </motion.button>
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-lg hover:bg-accent transition-colors"
-            aria-label="Menu"
+            className="p-2 rounded-lg hover:bg-secondary transition-colors text-foreground"
+            aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
-          </motion.button>
+          </button>
         </div>
       </div>
 
@@ -123,30 +126,27 @@ export function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0, y: -10 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: "easeInOut" as const }}
-            className="md:hidden glass border-t border-border/50 overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden glass border-t border-border overflow-hidden"
           >
-            <div className="flex flex-col p-6 gap-1">
-              {navLinks.map((link, index) => (
-                <motion.a
+            <div className="flex flex-col p-4 gap-1">
+              {navLinks.map((link) => (
+                <a
                   key={link.name}
                   href={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
                   className={cn(
                     "px-4 py-3 text-base font-medium rounded-lg transition-all",
                     activeSection === link.href.replace("#", "")
                       ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary",
                   )}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
-                </motion.a>
+                </a>
               ))}
             </div>
           </motion.div>

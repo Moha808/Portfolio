@@ -1,133 +1,141 @@
-import { motion } from "framer-motion";
-import { Code2, Server, Wrench } from "lucide-react";
+import { useState } from "react";
+import {
+  Code2,
+  FileCode,
+  Sparkles,
+  Palette,
+  Globe,
+  Layout,
+  Zap,
+  Layers,
+  Server,
+  Flame,
+  Network,
+  Database,
+  GitBranch,
+  Rocket,
+  Figma,
+  Terminal,
+  Cloud,
+  Gauge,
+  CheckCircle,
+} from "lucide-react";
+import { SKILL_CATEGORIES } from "@/data/portfolio-data";
 
-const skills = [
-  {
-    category: "Frontend",
-    icon: <Code2 className="w-5 h-5" />,
-    color: "from-violet-500/20 to-purple-500/20",
-    items: [
-      { name: "HTML", level: 95 },
-      { name: "CSS", level: 90 },
-      { name: "JavaScript", level: 85 },
-      { name: "React", level: 90 },
-      { name: "Tailwind CSS", level: 92 },
-    ],
-  },
-  {
-    category: "Backend",
-    icon: <Server className="w-5 h-5" />,
-    color: "from-blue-500/20 to-cyan-500/20",
-    items: [
-      { name: "Firebase", level: 80 },
-      { name: "SQL", level: 55 },
-      { name: "Node.js", level: 65 },
-    ],
-  },
-  {
-    category: "Tools",
-    icon: <Wrench className="w-5 h-5" />,
-    color: "from-emerald-500/20 to-teal-500/20",
-    items: [
-      { name: "Git", level: 85 },
-      { name: "GitHub", level: 88 },
-      { name: "Figma", level: 75 },
-      { name: "VS Code", level: 95 },
-      { name: "Vite", level: 85 },
-    ],
-  },
-];
-
-function SkillBar({
-  name,
-  level,
-  delay,
-}: {
-  name: string;
-  level: number;
-  delay: number;
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-foreground">{name}</span>
-        <span className="text-xs font-mono text-muted-foreground">
-          {level}%
-        </span>
-      </div>
-      <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, delay, ease: "easeOut" as const }}
-          className="h-full bg-gradient-to-r from-primary to-[hsl(280_80%_65%)] rounded-full"
-        />
-      </div>
-    </div>
-  );
-}
+const iconMap: Record<string, React.ReactNode> = {
+  Code2: <Code2 className="w-5 h-5 text-primary" />,
+  FileCode: <FileCode className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
+  Sparkles: <Sparkles className="w-5 h-5 text-amber-500" />,
+  Palette: <Palette className="w-5 h-5 text-teal-500" />,
+  Globe: <Globe className="w-5 h-5 text-emerald-500" />,
+  Layout: <Layout className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
+  Zap: <Zap className="w-5 h-5 text-amber-400" />,
+  Layers: <Layers className="w-5 h-5 text-teal-500" />,
+  Server: <Server className="w-5 h-5 text-emerald-600" />,
+  Flame: <Flame className="w-5 h-5 text-orange-500" />,
+  Network: <Network className="w-5 h-5 text-teal-400" />,
+  Database: <Database className="w-5 h-5 text-teal-500" />,
+  GitBranch: <GitBranch className="w-5 h-5 text-emerald-500" />,
+  Rocket: <Rocket className="w-5 h-5 text-teal-500" />,
+  Figma: <Figma className="w-5 h-5 text-amber-500" />,
+  Terminal: <Terminal className="w-5 h-5 text-slate-400" />,
+  Cloud: <Cloud className="w-5 h-5 text-teal-500" />,
+  Gauge: <Gauge className="w-5 h-5 text-emerald-500" />,
+};
 
 export function Skills() {
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const categories = [
+    { id: "all", label: "All Technologies" },
+    ...SKILL_CATEGORIES.map((c) => ({ id: c.category, label: c.category })),
+  ];
+
+  const filteredCategories =
+    activeCategory === "all"
+      ? SKILL_CATEGORIES
+      : SKILL_CATEGORIES.filter((c) => c.category === activeCategory);
+
   return (
-    <section id="skills" className="py-24 relative">
-      {/* Background accent */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-
+    <section id="skills" className="py-20 relative">
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary font-mono text-sm tracking-wider uppercase">
-            // my skills
+        <div className="text-center mb-12">
+          <span className="text-primary font-mono text-xs tracking-wider uppercase">
+            // technical expertise
           </span>
-          <h2 className="section-heading mt-3">Skills & Technologies</h2>
+          <h2 className="section-heading mt-2">Skills & Technical Proficiencies</h2>
           <p className="section-subheading">
-            The tools and technologies I use to bring ideas to life and create
-            exceptional digital experiences.
+            Technologies, libraries, and tools I use to build scalable frontend interfaces and integrate backend services.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {skills.map((category, catIndex) => (
-            <motion.div
-              key={category.category}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: catIndex * 0.15 }}
-              whileHover={{ y: -5 }}
-              className="group relative p-6 rounded-2xl border border-border bg-card/50 hover:border-primary/30 transition-all duration-300"
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+                activeCategory === cat.id
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-card text-muted-foreground border border-border hover:text-foreground hover:bg-secondary/60"
+              }`}
             >
-              {/* Subtle gradient background on hover */}
-              <div
-                className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-              />
+              {cat.label}
+            </button>
+          ))}
+        </div>
 
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors duration-300">
-                    {category.icon}
-                  </div>
-                  <h3 className="text-lg font-bold">{category.category}</h3>
-                </div>
-
-                <div className="space-y-4">
-                  {category.items.map((item, itemIndex) => (
-                    <SkillBar
-                      key={item.name}
-                      name={item.name}
-                      level={item.level}
-                      delay={catIndex * 0.15 + itemIndex * 0.08}
-                    />
-                  ))}
-                </div>
+        {/* Categories Grid */}
+        <div className="space-y-8">
+          {filteredCategories.map((cat) => (
+            <div
+              key={cat.category}
+              className="p-6 sm:p-8 rounded-2xl border border-border bg-card shadow-sm"
+            >
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-foreground">
+                  {cat.category}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                  {cat.description}
+                </p>
               </div>
-            </motion.div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                {cat.items.map((skill) => (
+                  <div
+                    key={skill.name}
+                    className="group p-3.5 rounded-xl border border-border bg-background/50 hover:border-primary/40 transition-all duration-200 flex flex-col justify-between"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center">
+                        {iconMap[skill.iconName] || <Code2 className="w-5 h-5 text-primary" />}
+                      </div>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
+                          skill.level === "Core"
+                            ? "bg-primary/10 text-primary border-primary/20"
+                            : "bg-secondary text-muted-foreground border-border"
+                        }`}
+                      >
+                        {skill.level}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors">
+                        {skill.name}
+                      </h4>
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1">
+                        <CheckCircle className="w-3 h-3 text-emerald-500" />
+                        <span>Production Ready</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

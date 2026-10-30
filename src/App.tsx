@@ -1,7 +1,9 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { ToastProvider } from "@/providers/toast-provider";
 import { Layout } from "@/components/layout/layout";
 import { Hero } from "@/components/sections/hero";
+import { CommandPalette } from "@/components/ui/command-palette";
 import { Loader2 } from "lucide-react";
 
 // Lazy load sections below the fold
@@ -40,18 +42,38 @@ function SectionLoader() {
 }
 
 function App() {
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Global Cmd+K / Ctrl+K keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Layout>
-        <Hero />
-        <Suspense fallback={<SectionLoader />}>
-          <About />
-          <Skills />
-          <Projects />
-          <Experience />
-          <Contact />
-        </Suspense>
-      </Layout>
+      <ToastProvider>
+        <Layout onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}>
+          <Hero onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} />
+          <Suspense fallback={<SectionLoader />}>
+            <About />
+            <Skills />
+            <Projects />
+            <Experience />
+            <Contact />
+          </Suspense>
+        </Layout>
+        <CommandPalette
+          isOpen={isCommandPaletteOpen}
+          onClose={() => setIsCommandPaletteOpen(false)}
+        />
+      </ToastProvider>
     </ThemeProvider>
   );
 }

@@ -1,28 +1,5 @@
-import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, ArrowUp, Heart } from "lucide-react";
-
-const socialLinks = [
-  {
-    icon: <Github size={18} />,
-    href: "https://github.com/Moha808",
-    label: "GitHub",
-  },
-  {
-    icon: <Linkedin size={18} />,
-    href: "https://www.linkedin.com/in/igal-mohadapwa",
-    label: "LinkedIn",
-  },
-  {
-    icon: <Twitter size={18} />,
-    href: "https://twitter.com/M_o_h_a_808",
-    label: "Twitter",
-  },
-  {
-    icon: <Mail size={18} />,
-    href: "mailto:igalmoha0@gmail.com",
-    label: "Email",
-  },
-];
+import { Github, Linkedin, Twitter, Mail, ArrowUp } from "lucide-react";
+import { PERSONAL_INFO } from "@/data/portfolio-data";
 
 const footerLinks = [
   { name: "About", href: "#about" },
@@ -38,29 +15,26 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-card/50 border-t border-border/50">
-      {/* Gradient top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+    <footer className="relative border-t border-border bg-card/50">
+      <div className="max-w-7xl mx-auto px-6 pt-14 pb-8">
+        <div className="grid md:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
-          <div className="space-y-4">
-            <a href="#" className="font-bold text-2xl tracking-tighter">
-              Moha<span className="gradient-text">.dev</span>
+          <div className="space-y-3">
+            <a href="#" className="font-bold text-xl tracking-tighter">
+              <span className="text-foreground">{PERSONAL_INFO.nickname}</span>
+              <span className="text-primary">{PERSONAL_INFO.domain}</span>
             </a>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Frontend developer crafting beautiful, performant web experiences
-              that make a difference.
+              {PERSONAL_INFO.shortBio}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-4">
-              Quick Links
+            <h4 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground mb-3">
+              Navigation
             </h4>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {footerLinks.map((link) => (
                 <a
                   key={link.name}
@@ -75,46 +49,62 @@ export function Footer() {
 
           {/* Social */}
           <div>
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-4">
+            <h4 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground mb-3">
               Connect
             </h4>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.15, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-xl bg-secondary/80 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/30 border border-transparent transition-all duration-300"
-                  aria-label={social.label}
-                >
-                  {social.icon}
-                </motion.a>
-              ))}
+            <div className="flex gap-2">
+              <a
+                href={PERSONAL_INFO.socials.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:text-primary transition-all text-muted-foreground"
+                aria-label="GitHub"
+              >
+                <Github size={17} />
+              </a>
+              <a
+                href={PERSONAL_INFO.socials.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:text-primary transition-all text-muted-foreground"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={17} />
+              </a>
+              <a
+                href={PERSONAL_INFO.socials.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:text-primary transition-all text-muted-foreground"
+                aria-label="Twitter"
+              >
+                <Twitter size={17} />
+              </a>
+              <a
+                href={`mailto:${PERSONAL_INFO.email}`}
+                className="p-2.5 rounded-xl border border-border bg-card hover:bg-secondary hover:text-primary transition-all text-muted-foreground"
+                aria-label="Email"
+              >
+                <Mail size={17} />
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-border/50">
-          <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-            © {new Date().getFullYear()} Moha Igal. Built with
-            <Heart size={14} className="text-primary fill-primary" />
+        {/* Bottom */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} {PERSONAL_INFO.name}. Built with React, TypeScript & Tailwind CSS.
           </p>
-
-          <motion.button
+          <button
             onClick={scrollToTop}
-            whileHover={{ scale: 1.1, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="group flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
           >
             Back to top
-            <span className="w-8 h-8 rounded-full border border-border group-hover:border-primary/50 flex items-center justify-center transition-colors">
-              <ArrowUp size={14} />
+            <span className="w-7 h-7 rounded-full border border-border group-hover:border-primary flex items-center justify-center transition-colors">
+              <ArrowUp size={13} />
             </span>
-          </motion.button>
+          </button>
         </div>
       </div>
     </footer>
