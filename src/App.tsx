@@ -60,7 +60,7 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ToastProvider>
         <Layout onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}>
-          <Hero onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} />
+          <Hero />
           <Suspense fallback={<SectionLoader />}>
             <About />
             <Skills />

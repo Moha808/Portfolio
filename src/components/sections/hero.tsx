@@ -6,7 +6,6 @@ import {
   Linkedin,
   Twitter,
   Download,
-  Terminal,
 } from "lucide-react";
 import { PERSONAL_INFO } from "@/data/portfolio-data";
 import { useToast } from "@/providers/toast-provider";
@@ -50,7 +49,7 @@ function TypeWriter() {
   );
 }
 
-export function Hero({ onOpenCommandPalette }: { onOpenCommandPalette?: () => void }) {
+export function Hero() {
   const { success } = useToast();
 
   const handleDownloadCV = () => {
@@ -72,25 +71,12 @@ export function Hero({ onOpenCommandPalette }: { onOpenCommandPalette?: () => vo
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-72 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto text-center space-y-8">
-        {/* Availability Badge & Command Palette Shortcut */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        {/* Availability Badge */}
+        <div className="flex items-center justify-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-600 dark:text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             {PERSONAL_INFO.status}
           </div>
-
-          {onOpenCommandPalette && (
-            <button
-              onClick={onOpenCommandPalette}
-              className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/80 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all shadow-sm"
-            >
-              <Terminal size={13} className="text-primary" />
-              <span>Quick Navigation</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-secondary rounded border border-border">
-                ⌘K
-              </kbd>
-            </button>
-          )}
         </div>
 
         {/* Heading */}
